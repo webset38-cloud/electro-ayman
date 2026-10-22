@@ -1,0 +1,638 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ELECTRO AYMAN | الفخامة في عالم الهواتف</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+            background-color: #050505; 
+            color: #ffffff; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* تأثيرات الألوان الذهبية والفخمة */
+        .gold-gradient {
+            background: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gold-bg { 
+            background: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%); 
+        }
+        
+        /* البطاقات */
+        .glass-card {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(212, 175, 55, 0.4);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        /* تخصيص السكرول */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 10px; }
+
+        /* نافذة المنتج الثابتة (Sticky Bottom) */
+        .modal-body-scroll { 
+            max-height: calc(100vh - 150px); 
+            overflow-y: auto; 
+            padding-bottom: 100px; 
+        }
+        .sticky-bottom {
+            position: absolute; 
+            bottom: 0; left: 0; right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
+        }
+
+        /* إشعارات (Toasts) */
+        #toast-container {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            z-index: 9999; display: flex; flex-direction: column; gap: 10px;
+        }
+        .toast {
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid #d4af37;
+            color: white; padding: 12px 24px; border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            font-size: 14px; font-weight: bold;
+            opacity: 0; transform: translateY(-20px);
+            transition: all 0.3s ease;
+            display: flex; items-center; gap: 8px;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden relative">
+
+    <!-- خلفية مضيئة -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div class="absolute top-[-10%] right-[-10%] w-96 h-96 bg-yellow-600 rounded-full mix-blend-screen filter blur-[150px] opacity-20"></div>
+        <div class="absolute bottom-[-10%] left-[-10%] w-96 h-96 bg-yellow-600 rounded-full mix-blend-screen filter blur-[150px] opacity-10"></div>
+    </div>
+
+    <!-- الهيدر (Header) -->
+    <header class="fixed top-0 w-full z-40 bg-black/70 backdrop-blur-xl border-b border-white/5">
+        <div class="container mx-auto px-4 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <div class="w-12 h-12 rounded-full gold-bg flex items-center justify-center text-black font-black text-xl shadow-[0_0_15px_rgba(212,175,55,0.4)]">EA</div>
+                <div>
+                    <h1 class="font-black text-xl tracking-wide text-white">ELECTRO AYMAN</h1>
+                    <p class="text-[10px] text-gray-400">الفخامة في عالم الهواتف</p>
+                </div>
+            </div>
+            <div class="flex gap-2 md:gap-3">
+                <a href="https://www.instagram.com/anouar_prv07?dlrf=YnBlcGE0anY3a2di" target="_blank" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-gradient-to-tr hover:from-yellow-500 hover:to-fuchsia-600 transition-all border border-white/10 shadow-[0_0_10px_rgba(255,255,255,0.05)]">
+                    <i class="fab fa-instagram text-lg"></i>
+                </a>
+                <a href="https://wa.me/212752588133" target="_blank" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-green-500 transition-all border border-white/10 shadow-[0_0_10px_rgba(255,255,255,0.05)]">
+                    <i class="fab fa-whatsapp text-lg"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- واجهة الترحيب -->
+    <section class="pt-32 pb-8 px-4 text-center">
+        <h2 class="text-3xl md:text-5xl font-black mb-4 leading-tight">
+            مرحباً بكم عند <span class="gold-gradient">ELECTRO AYMAN</span>
+        </h2>
+        <p class="text-gray-400 max-w-lg mx-auto text-sm md:text-base mb-6">
+            هنا ستجد أفضل وأحدث الهواتف الذكية بأثمنة لا تقبل المنافسة. جودة، ضمان، وفخامة تليق بك.
+        </p>
+        <div class="flex flex-wrap justify-center gap-3 text-xs font-medium">
+            <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 flex items-center gap-2"><i class="fas fa-map-marker-alt text-yellow-500"></i> تطوان سوق باب النوادر</div>
+            <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 flex items-center gap-2"><i class="fas fa-check-circle text-yellow-500"></i> منتجات أصلية</div>
+            <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 flex items-center gap-2"><i class="fas fa-truck text-yellow-500"></i> توصيل سريع</div>
+        </div>
+    </section>
+
+    <!-- شبكة المنتجات -->
+    <main class="container mx-auto px-4 pb-20 max-w-6xl">
+        <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            <!-- سيتم توليد المنتجات هنا عبر الجافاسكريبت -->
+        </div>
+    </main>
+
+    <!-- الفوتر -->
+    <footer class="text-center py-10 bg-black/40 border-t border-white/5 relative">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-full gold-bg flex items-center justify-center text-black font-black text-xl mb-2 opacity-50">EA</div>
+                <div class="flex gap-4">
+                    <a href="https://www.instagram.com/anouar_prv07?dlrf=YnBlcGE0anY3a2di" target="_blank" class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-gradient-to-tr hover:from-yellow-500 hover:to-fuchsia-600 transition-all border border-white/10">
+                        <i class="fab fa-instagram text-xl"></i>
+                    </a>
+                    <a href="https://wa.me/212752588133" target="_blank" class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-green-500 transition-all border border-white/10">
+                        <i class="fab fa-whatsapp text-xl"></i>
+                    </a>
+                </div>
+            </div>
+            <p class="text-gray-500 text-sm mb-4">© 2026 Electro Ayman. جميع الحقوق محفوظة.</p>
+            
+            <!-- زر الدخول للوحة التحكم السري -->
+            <button onclick="openModal('admin-modal')" class="text-gray-700 hover:text-yellow-500 transition-colors p-2 text-xs flex items-center justify-center gap-1 mx-auto">
+                <i class="fas fa-lock"></i> الإدارة
+            </button>
+        </div>
+    </footer>
+
+    <!-- حاوية الإشعارات -->
+    <div id="toast-container"></div>
+
+    <!-- 1. نافذة تفاصيل المنتج (Product Modal) -->
+    <div id="product-modal" class="fixed inset-0 bg-black/90 z-50 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div id="product-modal-content" class="bg-[#111] w-full max-w-md rounded-[24px] border border-white/10 relative shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col h-[85vh] max-h-[800px]">
+            <button onclick="closeModal('product-modal')" class="absolute top-4 right-4 w-8 h-8 bg-black/50 rounded-full text-white z-10 flex items-center justify-center backdrop-blur-md border border-white/10 hover:bg-red-500 transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="modal-body-scroll p-5 pt-10">
+                <div class="bg-gradient-to-b from-white/5 to-transparent rounded-2xl p-4 mb-4 flex justify-center items-center h-48 md:h-56">
+                    <img id="modal-img" src="" alt="Phone" class="max-h-full object-contain drop-shadow-[0_10px_20px_rgba(212,175,55,0.2)]">
+                </div>
+                <div class="flex justify-between items-start mb-2">
+                    <h3 id="modal-title" class="text-xl md:text-2xl font-black text-white"></h3>
+                    <span id="modal-condition" class="px-3 py-1 text-[10px] font-bold rounded-full bg-yellow-500/20 text-yellow-500 border border-yellow-500/30 whitespace-nowrap"></span>
+                </div>
+                <p id="modal-specs" class="text-sm text-gray-400 mb-6 leading-relaxed bg-white/5 p-3 rounded-xl border border-white/5"></p>
+                <div class="mb-4">
+                    <p class="text-sm text-gray-300 font-bold mb-3 flex items-center gap-2"><i class="fas fa-hdd text-yellow-500"></i> اختر السعة (Stockage):</p>
+                    <div id="modal-variants" class="flex flex-wrap gap-2"></div>
+                </div>
+            </div>
+
+            <!-- شريط السعر والطلب (الثابت بالأسفل) -->
+            <div class="sticky-bottom">
+                <div>
+                    <p class="text-xs text-gray-400 mb-1">السعر الإجمالي:</p>
+                    <p id="modal-price" class="text-xl font-black gold-gradient">--- درهم</p>
+                </div>
+                <button onclick="openOrderModal()" class="gold-bg text-black font-bold py-3 px-6 rounded-full hover:scale-105 transition-transform flex items-center gap-2 shadow-[0_5px_15px_rgba(212,175,55,0.3)]">
+                    <i class="fab fa-whatsapp text-lg"></i> اطلب الآن
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. نافذة نموذج الطلب (Order Form Modal) -->
+    <div id="order-modal" class="fixed inset-0 bg-black/90 z-[60] hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4 backdrop-blur-md">
+        <div id="order-modal-content" class="bg-[#111] w-full max-w-md rounded-[24px] border border-white/10 relative shadow-2xl transform scale-95 transition-transform duration-300 p-6">
+            <button onclick="closeModal('order-modal')" class="absolute top-4 right-4 w-8 h-8 bg-black/50 rounded-full text-white z-10 flex items-center justify-center backdrop-blur-md border border-white/10 hover:bg-gray-600 transition-colors">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <h3 class="text-2xl font-black text-white mb-2 mt-4 text-center">تأكيد الطلب</h3>
+            <p class="text-sm text-gray-400 text-center mb-6">أدخل معلوماتك ليتم تحويلك للواتساب مباشرة</p>
+            <form id="order-form" onsubmit="submitOrder(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm text-gray-300 mb-1">الاسم الكامل <span class="text-red-500">*</span></label>
+                    <input type="text" id="order-name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500 transition-colors">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-300 mb-1">رقم الهاتف <span class="text-red-500">*</span></label>
+                    <input type="tel" id="order-phone" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500 transition-colors text-right" dir="ltr">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-300 mb-1">العنوان / المدينة <span class="text-red-500">*</span></label>
+                    <input type="text" id="order-address" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500 transition-colors">
+                </div>
+                <button type="submit" class="w-full bg-green-500 text-white font-bold py-3 mt-4 rounded-xl hover:bg-green-600 transition-colors flex items-center justify-center gap-2 text-lg">
+                    <i class="fab fa-whatsapp text-2xl"></i> إرسال الطلب
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. نافذة تسجيل دخول الإدارة (Admin Login) -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/95 z-[70] hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4 backdrop-blur-md">
+        <div id="admin-modal-content" class="bg-[#111] w-full max-w-sm rounded-[24px] border border-yellow-500/30 relative shadow-2xl transform scale-95 transition-transform duration-300 p-6 text-center">
+            <button onclick="closeModal('admin-modal')" class="absolute top-4 right-4 w-8 h-8 bg-black/50 rounded-full text-white z-10 flex items-center justify-center backdrop-blur-md border border-white/10 hover:bg-red-500 transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="w-16 h-16 rounded-full gold-bg mx-auto flex items-center justify-center text-black text-2xl mb-4 mt-2">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h3 class="text-xl font-black text-white mb-6">دخول الإدارة</h3>
+            <input type="password" id="admin-password" placeholder="كلمة المرور" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500 transition-colors text-center tracking-widest mb-4" dir="ltr">
+            <button onclick="checkAdmin()" class="w-full gold-bg text-black font-bold py-3 rounded-xl hover:scale-105 transition-transform">دخول</button>
+        </div>
+    </div>
+
+    <!-- 4. لوحة تحكم الإدارة (Admin Dashboard) -->
+    <div id="admin-dashboard" class="fixed inset-0 bg-black/95 z-[75] hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4 backdrop-blur-md">
+        <div id="admin-dashboard-content" class="bg-[#111] w-full max-w-2xl rounded-[24px] border border-yellow-500/30 relative shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col h-[85vh]">
+            <div class="p-5 border-b border-white/10 flex justify-between items-center bg-white/5 rounded-t-[24px]">
+                <h3 class="text-xl font-black text-white"><i class="fas fa-cogs text-yellow-500 ml-2"></i> إدارة المنتجات</h3>
+                <button onclick="closeModal('admin-dashboard')" class="text-gray-400 hover:text-white w-8 h-8 flex items-center justify-center rounded-full bg-white/10"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-4 border-b border-white/10">
+                <button onclick="openProductForm()" class="w-full bg-green-600 text-white font-bold py-3 rounded-xl hover:bg-green-500 transition-colors flex items-center justify-center gap-2">
+                    <i class="fas fa-plus"></i> إضافة هاتف جديد
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4 space-y-3" id="admin-product-list">
+                <!-- المنتجات ستظهر هنا للإدارة -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. نافذة إضافة/تعديل منتج (Admin Form) -->
+    <div id="admin-product-form" class="fixed inset-0 bg-black/95 z-[80] hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4 backdrop-blur-md">
+        <div id="admin-product-form-content" class="bg-[#111] w-full max-w-md rounded-[24px] border border-yellow-500/30 relative shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-white/10 flex justify-between items-center">
+                <h3 class="text-lg font-black text-white" id="form-modal-title">إضافة هاتف</h3>
+                <button onclick="closeModal('admin-product-form')" class="text-gray-400 hover:text-white w-8 h-8 flex items-center justify-center bg-white/10 rounded-full"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-4 overflow-y-auto space-y-4">
+                <input type="hidden" id="edit-product-id">
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">الماركة (Brand)</label>
+                    <input type="text" id="p-brand" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white outline-none focus:border-yellow-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">اسم الهاتف</label>
+                    <input type="text" id="p-name" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white outline-none focus:border-yellow-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">الحالة (Condition)</label>
+                    <input type="text" id="p-condition" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white outline-none focus:border-yellow-500" placeholder="مثال: جديد، مستعمل...">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">رابط الصورة (URL)</label>
+                    <input type="text" id="p-image" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-left outline-none focus:border-yellow-500" dir="ltr">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">المواصفات</label>
+                    <textarea id="p-specs" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white outline-none focus:border-yellow-500"></textarea>
+                </div>
+                
+                <div class="border-t border-white/10 pt-3">
+                    <label class="block text-xs text-yellow-500 mb-2 font-bold flex justify-between items-center">
+                        النسخ والأسعار (Variants)
+                        <button onclick="addVariantField()" class="bg-white/10 px-2 py-1 rounded text-white hover:bg-white/20 font-normal transition-colors"><i class="fas fa-plus text-[10px]"></i> إضافة سعة</button>
+                    </label>
+                    <div id="variants-container" class="space-y-2"></div>
+                </div>
+            </div>
+            <div class="p-4 border-t border-white/10">
+                <button onclick="saveProduct()" class="w-full gold-bg text-black font-bold py-3 rounded-xl hover:scale-[1.02] transition-transform">حفظ الهاتف</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. حالة التطبيق (State) ---
+        const WHATSAPP_NUMBER = "212752588133";
+        const ADMIN_PASS = "1234";
+
+        const defaultProducts = [
+            {
+                id: 1, brand: "Apple", name: "iPhone 15 Pro Max", condition: "جديد - غير مستعمل",
+                specs: "شاشة 6.7 بوصة Super Retina XDR، معالج A17 Pro القوي، كاميرا 48MP مع تقريب بصري 5x، تصميم من التيتانيوم.",
+                image: "https://placehold.co/300x400/111/d4af37?text=iPhone+15+Pro+Max",
+                variants: [{ capacity: "256GB", price: 12500 }, { capacity: "512GB", price: 14900 }]
+            },
+            {
+                id: 2, brand: "Samsung", name: "Galaxy S24 Ultra", condition: "مستعمل كالجديد",
+                specs: "شاشة 6.8 بوصة Dynamic AMOLED 2X، معالج Snapdragon 8 Gen 3، كاميرا 200MP مذهلة، مع قلم S Pen مدمج.",
+                image: "https://placehold.co/300x400/111/d4af37?text=Galaxy+S24+Ultra",
+                variants: [{ capacity: "256GB", price: 11000 }, { capacity: "512GB", price: 12500 }]
+            },
+            {
+                id: 3, brand: "Apple", name: "iPhone 14 Pro", condition: "مستعمل - حالة ممتازة",
+                specs: "شاشة 6.1 بوصة، معالج A16 Bionic، كاميرا 48MP، ميزة الجزيرة التفاعلية (Dynamic Island) المبتكرة.",
+                image: "https://placehold.co/300x400/111/d4af37?text=iPhone+14+Pro",
+                variants: [{ capacity: "128GB", price: 8500 }, { capacity: "256GB", price: 9200 }]
+            },
+            {
+                id: 4, brand: "Xiaomi", name: "Xiaomi 14 Pro", condition: "جديد",
+                specs: "شاشة 6.73 بوصة AMOLED، كاميرات بتعاون مع Leica، شحن فائق السرعة 120W، تصميم زجاجي أنيق.",
+                image: "https://placehold.co/300x400/111/d4af37?text=Xiaomi+14+Pro",
+                variants: [{ capacity: "256GB", price: 8000 }, { capacity: "512GB", price: 8900 }]
+            }
+        ];
+
+        // تحميل المنتجات من LocalStorage أو استخدام الافتراضية
+        let products = JSON.parse(localStorage.getItem('ea_products')) || defaultProducts;
+        let currentProduct = null;
+        let selectedVariantIndex = -1;
+
+        // --- 2. وظائف الواجهة الرئيسية ---
+        function saveToLocal() {
+            localStorage.setItem('ea_products', JSON.stringify(products));
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type === 'success' ? 'border-green-500 text-green-400' : 'border-red-500 text-red-400'}`;
+            toast.innerHTML = type === 'success' ? `<i class="fas fa-check-circle"></i> <span>${message}</span>` : `<i class="fas fa-exclamation-circle"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            const content = document.getElementById(`${id}-content`);
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                if(content) content.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            const content = document.getElementById(`${id}-content`);
+            modal.classList.add('opacity-0');
+            if(content) content.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+            
+            if(products.length === 0) {
+                grid.innerHTML = '<p class="col-span-full text-center text-gray-500 py-10">لا توجد منتجات حالياً. المرجو إضافتها من لوحة الإدارة.</p>';
+                return;
+            }
+
+            products.forEach(product => {
+                // حساب أقل سعر
+                let minPrice = 0;
+                if(product.variants && product.variants.length > 0) {
+                    minPrice = Math.min(...product.variants.map(v => v.price));
+                }
+
+                const card = document.createElement('div');
+                card.className = 'glass-card overflow-hidden group cursor-pointer flex flex-col h-full';
+                card.onclick = () => openProductModal(product.id);
+                card.innerHTML = `
+                    <div class="relative h-48 md:h-56 bg-gradient-to-b from-white/5 to-transparent p-4 flex justify-center items-center">
+                        <img src="${product.image}" alt="${product.name}" class="max-h-full object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-500">
+                        <span class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm border border-yellow-500/30 text-yellow-500 text-[10px] px-2 py-1 rounded-full font-bold shadow-lg">${product.brand}</span>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow border-t border-white/5">
+                        <h3 class="font-bold text-white text-lg mb-1 truncate">${product.name}</h3>
+                        <p class="text-xs text-gray-400 mb-4 line-clamp-2">${product.specs}</p>
+                        <div class="mt-auto flex justify-between items-end">
+                            <div>
+                                <p class="text-[10px] text-gray-500 mb-1">يبدأ من</p>
+                                <p class="font-black gold-gradient text-lg">${minPrice.toLocaleString()} درهم</p>
+                            </div>
+                            <button class="w-8 h-8 rounded-full gold-bg text-black flex items-center justify-center hover:scale-110 transition-transform shadow-[0_0_10px_rgba(212,175,55,0.3)]">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- 3. وظائف تفاصيل المنتج والطلب ---
+        function openProductModal(id) {
+            currentProduct = products.find(p => p.id === id);
+            if(!currentProduct) return;
+
+            document.getElementById('modal-img').src = currentProduct.image;
+            document.getElementById('modal-title').textContent = currentProduct.name;
+            document.getElementById('modal-condition').textContent = currentProduct.condition;
+            document.getElementById('modal-specs').textContent = currentProduct.specs;
+            
+            const variantsContainer = document.getElementById('modal-variants');
+            variantsContainer.innerHTML = '';
+            
+            if(currentProduct.variants && currentProduct.variants.length > 0) {
+                currentProduct.variants.forEach((variant, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'variant-btn px-4 py-2 rounded-xl border border-white/20 bg-white/5 text-sm font-medium transition-all';
+                    btn.textContent = variant.capacity;
+                    btn.onclick = () => selectVariant(idx, btn);
+                    variantsContainer.appendChild(btn);
+                });
+                // اختيار أول سعة افتراضياً
+                selectVariant(0, variantsContainer.children[0]);
+            } else {
+                document.getElementById('modal-price').textContent = "غير متوفر";
+                selectedVariantIndex = -1;
+            }
+
+            openModal('product-modal');
+        }
+
+        function selectVariant(index, btnElement) {
+            selectedVariantIndex = index;
+            const price = currentProduct.variants[index].price;
+            document.getElementById('modal-price').textContent = `${price.toLocaleString()} درهم`;
+            
+            document.querySelectorAll('.variant-btn').forEach(btn => {
+                btn.classList.remove('gold-bg', 'text-black', 'border-transparent');
+                btn.classList.add('bg-white/5', 'text-white', 'border-white/20');
+            });
+            btnElement.classList.remove('bg-white/5', 'text-white', 'border-white/20');
+            btnElement.classList.add('gold-bg', 'text-black', 'border-transparent');
+        }
+
+        function openOrderModal() {
+            if(selectedVariantIndex === -1) {
+                showToast("المرجو اختيار السعة أولاً", "error");
+                return;
+            }
+            closeModal('product-modal');
+            setTimeout(() => openModal('order-modal'), 300);
+        }
+
+        function submitOrder(e) {
+            e.preventDefault();
+            const name = document.getElementById('order-name').value;
+            const phone = document.getElementById('order-phone').value;
+            const address = document.getElementById('order-address').value;
+            const variant = currentProduct.variants[selectedVariantIndex];
+            
+            const msg = `*طلب جديد من ELECTRO AYMAN* 🌟
+-------------------------
+📱 *الهاتف:* ${currentProduct.name}
+💾 *السعة:* ${variant.capacity}
+💰 *السعر:* ${variant.price.toLocaleString()} درهم
+-------------------------
+👤 *الاسم:* ${name}
+📞 *الرقم:* ${phone}
+📍 *العنوان:* ${address}`;
+
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+            closeModal('order-modal');
+            document.getElementById('order-form').reset();
+            showToast("تم توجيهك للواتساب بنجاح!");
+        }
+
+        // --- 4. نظام الإدارة (Admin) ---
+        function checkAdmin() {
+            const pass = document.getElementById('admin-password').value;
+            if(pass === ADMIN_PASS) {
+                document.getElementById('admin-password').value = '';
+                closeModal('admin-modal');
+                setTimeout(() => {
+                    renderAdminList();
+                    openModal('admin-dashboard');
+                }, 300);
+            } else {
+                showToast("كلمة المرور خاطئة!", "error");
+            }
+        }
+
+        function renderAdminList() {
+            const list = document.getElementById('admin-product-list');
+            list.innerHTML = '';
+            if(products.length === 0) {
+                list.innerHTML = '<p class="text-center text-gray-500 py-4 text-sm">لا توجد هواتف.</p>';
+                return;
+            }
+            products.forEach(p => {
+                let minPrice = p.variants.length > 0 ? Math.min(...p.variants.map(v => v.price)) : 0;
+                list.innerHTML += `
+                    <div class="bg-white/5 p-3 rounded-xl border border-white/10 flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <img src="${p.image}" class="w-12 h-12 object-contain bg-black/50 rounded-lg p-1">
+                            <div>
+                                <h4 class="text-white font-bold text-sm line-clamp-1">${p.name}</h4>
+                                <p class="text-[10px] text-gray-400">${p.brand} | ${minPrice.toLocaleString()} درهم</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="openProductForm(${p.id})" class="text-blue-400 bg-blue-400/10 w-8 h-8 rounded-lg hover:bg-blue-400/20 flex justify-center items-center transition-colors"><i class="fas fa-pen text-xs"></i></button>
+                            <button onclick="deleteProduct(${p.id})" class="text-red-400 bg-red-400/10 w-8 h-8 rounded-lg hover:bg-red-400/20 flex justify-center items-center transition-colors"><i class="fas fa-trash text-xs"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openProductForm(id = null) {
+            const vContainer = document.getElementById('variants-container');
+            vContainer.innerHTML = '';
+            
+            if (id) {
+                const p = products.find(x => x.id === id);
+                document.getElementById('form-modal-title').textContent = "تعديل الهاتف";
+                document.getElementById('edit-product-id').value = p.id;
+                document.getElementById('p-brand').value = p.brand;
+                document.getElementById('p-name').value = p.name;
+                document.getElementById('p-condition').value = p.condition;
+                document.getElementById('p-image').value = p.image;
+                document.getElementById('p-specs').value = p.specs;
+                p.variants.forEach(v => addVariantField(v.capacity, v.price));
+            } else {
+                document.getElementById('form-modal-title').textContent = "إضافة هاتف جديد";
+                document.getElementById('edit-product-id').value = "";
+                document.getElementById('p-brand').value = "";
+                document.getElementById('p-name').value = "";
+                document.getElementById('p-condition').value = "";
+                document.getElementById('p-image').value = "";
+                document.getElementById('p-specs').value = "";
+                addVariantField(); 
+            }
+            openModal('admin-product-form');
+        }
+
+        function addVariantField(cap = "", pr = "") {
+            const vId = Math.random().toString(36).substr(2, 9);
+            const html = `
+                <div class="flex gap-2 variant-item items-center" id="var-${vId}">
+                    <input type="text" placeholder="السعة (مثال: 128GB)" value="${cap}" class="var-cap w-1/2 bg-black/50 border border-white/10 rounded px-3 py-2 text-xs text-white outline-none focus:border-yellow-500" dir="ltr">
+                    <input type="number" placeholder="السعر" value="${pr}" class="var-price w-1/2 bg-black/50 border border-white/10 rounded px-3 py-2 text-xs text-white outline-none focus:border-yellow-500">
+                    <button type="button" onclick="document.getElementById('var-${vId}').remove()" class="text-red-500 hover:text-red-400 p-2"><i class="fas fa-times"></i></button>
+                </div>
+            `;
+            document.getElementById('variants-container').insertAdjacentHTML('beforeend', html);
+        }
+
+        function saveProduct() {
+            const idInput = document.getElementById('edit-product-id').value;
+            
+            const variantEls = document.querySelectorAll('.variant-item');
+            const newVariants = [];
+            variantEls.forEach(el => {
+                const cap = el.querySelector('.var-cap').value.trim();
+                const pr = parseInt(el.querySelector('.var-price').value);
+                if(cap && !isNaN(pr)) newVariants.push({ capacity: cap, price: pr });
+            });
+
+            if(newVariants.length === 0) {
+                showToast("يجب إدخال سعة وسعر واحد على الأقل", "error");
+                return;
+            }
+
+            const productData = {
+                id: idInput ? parseInt(idInput) : Date.now(),
+                brand: document.getElementById('p-brand').value.trim() || "غير محدد",
+                name: document.getElementById('p-name').value.trim() || "هاتف بدون اسم",
+                condition: document.getElementById('p-condition').value.trim() || "غير محدد",
+                image: document.getElementById('p-image').value.trim() || "https://placehold.co/300x400/111/d4af37?text=Phone",
+                specs: document.getElementById('p-specs').value.trim() || "لا توجد مواصفات",
+                variants: newVariants
+            };
+
+            if (idInput) {
+                const index = products.findIndex(p => p.id === parseInt(idInput));
+                if(index !== -1) products[index] = productData;
+                showToast("تم تعديل الهاتف بنجاح!");
+            } else {
+                products.unshift(productData);
+                showToast("تمت إضافة الهاتف بنجاح!");
+            }
+
+            saveToLocal();
+            renderProducts();
+            renderAdminList();
+            closeModal('admin-product-form');
+        }
+
+        function deleteProduct(id) {
+            if(confirm("هل أنت متأكد من حذف هذا الهاتف؟")) {
+                products = products.filter(p => p.id !== id);
+                saveToLocal();
+                renderProducts();
+                renderAdminList();
+                showToast("تم الحذف بنجاح!");
+            }
+        }
+
+        // إغلاق النوافذ عند الضغط في الفراغ (خارج المحتوى)
+        window.onclick = (e) => {
+            const modals = ['product-modal', 'order-modal', 'admin-modal', 'admin-dashboard', 'admin-product-form'];
+            modals.forEach(id => {
+                const m = document.getElementById(id);
+                if (e.target === m) closeModal(id);
+            });
+        };
+
+        // التهيئة عند فتح الموقع
+        window.onload = renderProducts;
+    </script>
+</body>
+</html>
+```
