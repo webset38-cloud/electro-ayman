@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -128,7 +127,8 @@
     <!-- شبكة المنتجات -->
     <main class="container mx-auto px-4 pb-20 max-w-6xl">
         <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            <!-- سيتم توليد المنتجات هنا عبر الجافاسكريبت -->
+            <!-- رسالة التحميل -->
+            <p class="col-span-full text-center text-yellow-500 py-10 font-bold"><i class="fas fa-spinner fa-spin"></i> جاري تحميل المنتجات...</p>
         </div>
     </main>
 
@@ -293,51 +293,69 @@
                 </div>
             </div>
             <div class="p-4 border-t border-white/10">
-                <button onclick="saveProduct()" class="w-full gold-bg text-black font-bold py-3 rounded-xl hover:scale-[1.02] transition-transform">حفظ الهاتف</button>
+                <button id="save-btn" onclick="saveProduct()" class="w-full gold-bg text-black font-bold py-3 rounded-xl hover:scale-[1.02] transition-transform">حفظ الهاتف</button>
             </div>
         </div>
     </div>
 
-    <script>
-        // --- 1. حالة التطبيق (State) ---
+    <!-- Firebase Scripts (Module Type) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // إعدادات فايربيس الخاصة بك
+        const firebaseConfig = {
+            apiKey: "AIzaSyDg0OAnnlAzeCkHisliquWd5TYNbLIJ4Ko",
+            authDomain: "electro-ayman.firebaseapp.com",
+            projectId: "electro-ayman",
+            storageBucket: "electro-ayman.firebasestorage.app",
+            messagingSenderId: "395785333743",
+            appId: "1:395785333743:web:513c261c7c91733355241a",
+            measurementId: "G-7BP5FZQ4JQ"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- حالة التطبيق ---
         const WHATSAPP_NUMBER = "212752588133";
         const ADMIN_PASS = "1234";
 
         const defaultProducts = [
-            {
-                id: 1, brand: "Apple", name: "iPhone 15 Pro Max", condition: "جديد - غير مستعمل",
-                specs: "شاشة 6.7 بوصة Super Retina XDR، معالج A17 Pro القوي، كاميرا 48MP مع تقريب بصري 5x، تصميم من التيتانيوم.",
-                image: "https://placehold.co/300x400/111/d4af37?text=iPhone+15+Pro+Max",
-                variants: [{ capacity: "256GB", price: 12500 }, { capacity: "512GB", price: 14900 }]
-            },
-            {
-                id: 2, brand: "Samsung", name: "Galaxy S24 Ultra", condition: "مستعمل كالجديد",
-                specs: "شاشة 6.8 بوصة Dynamic AMOLED 2X، معالج Snapdragon 8 Gen 3، كاميرا 200MP مذهلة، مع قلم S Pen مدمج.",
-                image: "https://placehold.co/300x400/111/d4af37?text=Galaxy+S24+Ultra",
-                variants: [{ capacity: "256GB", price: 11000 }, { capacity: "512GB", price: 12500 }]
-            },
-            {
-                id: 3, brand: "Apple", name: "iPhone 14 Pro", condition: "مستعمل - حالة ممتازة",
-                specs: "شاشة 6.1 بوصة، معالج A16 Bionic، كاميرا 48MP، ميزة الجزيرة التفاعلية (Dynamic Island) المبتكرة.",
-                image: "https://placehold.co/300x400/111/d4af37?text=iPhone+14+Pro",
-                variants: [{ capacity: "128GB", price: 8500 }, { capacity: "256GB", price: 9200 }]
-            },
-            {
-                id: 4, brand: "Xiaomi", name: "Xiaomi 14 Pro", condition: "جديد",
-                specs: "شاشة 6.73 بوصة AMOLED، كاميرات بتعاون مع Leica، شحن فائق السرعة 120W، تصميم زجاجي أنيق.",
-                image: "https://placehold.co/300x400/111/d4af37?text=Xiaomi+14+Pro",
-                variants: [{ capacity: "256GB", price: 8000 }, { capacity: "512GB", price: 8900 }]
-            }
+            { brand: "Apple", name: "iPhone 15 Pro Max", condition: "جديد - غير مستعمل", specs: "شاشة 6.7 بوصة Super Retina XDR، معالج A17 Pro القوي، كاميرا 48MP مع تقريب بصري 5x، تصميم من التيتانيوم.", image: "https://placehold.co/300x400/111/d4af37?text=iPhone+15+Pro+Max", variants: [{ capacity: "256GB", price: 12500 }, { capacity: "512GB", price: 14900 }] },
+            { brand: "Samsung", name: "Galaxy S24 Ultra", condition: "مستعمل كالجديد", specs: "شاشة 6.8 بوصة Dynamic AMOLED 2X، معالج Snapdragon 8 Gen 3، كاميرا 200MP مذهلة، مع قلم S Pen مدمج.", image: "https://placehold.co/300x400/111/d4af37?text=Galaxy+S24+Ultra", variants: [{ capacity: "256GB", price: 11000 }, { capacity: "512GB", price: 12500 }] },
+            { brand: "Apple", name: "iPhone 14 Pro", condition: "مستعمل - حالة ممتازة", specs: "شاشة 6.1 بوصة، معالج A16 Bionic، كاميرا 48MP، ميزة الجزيرة التفاعلية (Dynamic Island) المبتكرة.", image: "https://placehold.co/300x400/111/d4af37?text=iPhone+14+Pro", variants: [{ capacity: "128GB", price: 8500 }, { capacity: "256GB", price: 9200 }] },
+            { brand: "Xiaomi", name: "Xiaomi 14 Pro", condition: "جديد", specs: "شاشة 6.73 بوصة AMOLED، كاميرات بتعاون مع Leica، شحن فائق السرعة 120W، تصميم زجاجي أنيق.", image: "https://placehold.co/300x400/111/d4af37?text=Xiaomi+14+Pro", variants: [{ capacity: "256GB", price: 8000 }, { capacity: "512GB", price: 8900 }] }
         ];
 
-        // تحميل المنتجات من LocalStorage أو استخدام الافتراضية
-        let products = JSON.parse(localStorage.getItem('ea_products')) || defaultProducts;
+        let products = [];
         let currentProduct = null;
         let selectedVariantIndex = -1;
 
-        // --- 2. وظائف الواجهة الرئيسية ---
-        function saveToLocal() {
-            localStorage.setItem('ea_products', JSON.stringify(products));
+        // جلب المنتجات من فايربيس
+        async function loadProducts() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "products"));
+                
+                // إذا كانت قاعدة البيانات فارغة (أول مرة)، نضع الهواتف الافتراضية
+                if (querySnapshot.empty) {
+                    for (let p of defaultProducts) {
+                        await addDoc(collection(db, "products"), p);
+                    }
+                    return loadProducts(); // إعادة الجلب بعد الإضافة
+                }
+
+                products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderProducts();
+                
+                // تحديث اللوحة إذا كانت مفتوحة
+                if(!document.getElementById('admin-dashboard').classList.contains('hidden')){
+                    renderAdminList();
+                }
+            } catch (error) {
+                console.error("Error loading products:", error);
+                document.getElementById('products-grid').innerHTML = '<p class="col-span-full text-center text-red-500 py-10">حدث خطأ أثناء تحميل الهواتف. يرجى تحديث الصفحة.</p>';
+            }
         }
 
         function showToast(message, type = 'success') {
@@ -353,7 +371,7 @@
             }, 3000);
         }
 
-        function openModal(id) {
+        window.openModal = function(id) {
             const modal = document.getElementById(id);
             const content = document.getElementById(`${id}-content`);
             modal.classList.remove('hidden');
@@ -361,15 +379,15 @@
                 modal.classList.remove('opacity-0');
                 if(content) content.classList.remove('scale-95');
             }, 10);
-        }
+        };
 
-        function closeModal(id) {
+        window.closeModal = function(id) {
             const modal = document.getElementById(id);
             const content = document.getElementById(`${id}-content`);
             modal.classList.add('opacity-0');
             if(content) content.classList.add('scale-95');
             setTimeout(() => modal.classList.add('hidden'), 300);
-        }
+        };
 
         function renderProducts() {
             const grid = document.getElementById('products-grid');
@@ -381,7 +399,6 @@
             }
 
             products.forEach(product => {
-                // حساب أقل سعر
                 let minPrice = 0;
                 if(product.variants && product.variants.length > 0) {
                     minPrice = Math.min(...product.variants.map(v => v.price));
@@ -389,7 +406,7 @@
 
                 const card = document.createElement('div');
                 card.className = 'glass-card overflow-hidden group cursor-pointer flex flex-col h-full';
-                card.onclick = () => openProductModal(product.id);
+                card.onclick = () => window.openProductModal(product.id);
                 card.innerHTML = `
                     <div class="relative h-48 md:h-56 bg-gradient-to-b from-white/5 to-transparent p-4 flex justify-center items-center">
                         <img src="${product.image}" alt="${product.name}" class="max-h-full object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-500">
@@ -413,8 +430,7 @@
             });
         }
 
-        // --- 3. وظائف تفاصيل المنتج والطلب ---
-        function openProductModal(id) {
+        window.openProductModal = function(id) {
             currentProduct = products.find(p => p.id === id);
             if(!currentProduct) return;
 
@@ -431,20 +447,19 @@
                     const btn = document.createElement('button');
                     btn.className = 'variant-btn px-4 py-2 rounded-xl border border-white/20 bg-white/5 text-sm font-medium transition-all';
                     btn.textContent = variant.capacity;
-                    btn.onclick = () => selectVariant(idx, btn);
+                    btn.onclick = () => window.selectVariant(idx, btn);
                     variantsContainer.appendChild(btn);
                 });
-                // اختيار أول سعة افتراضياً
-                selectVariant(0, variantsContainer.children[0]);
+                window.selectVariant(0, variantsContainer.children[0]);
             } else {
                 document.getElementById('modal-price').textContent = "غير متوفر";
                 selectedVariantIndex = -1;
             }
 
-            openModal('product-modal');
-        }
+            window.openModal('product-modal');
+        };
 
-        function selectVariant(index, btnElement) {
+        window.selectVariant = function(index, btnElement) {
             selectedVariantIndex = index;
             const price = currentProduct.variants[index].price;
             document.getElementById('modal-price').textContent = `${price.toLocaleString()} درهم`;
@@ -455,54 +470,45 @@
             });
             btnElement.classList.remove('bg-white/5', 'text-white', 'border-white/20');
             btnElement.classList.add('gold-bg', 'text-black', 'border-transparent');
-        }
+        };
 
-        function openOrderModal() {
+        window.openOrderModal = function() {
             if(selectedVariantIndex === -1) {
                 showToast("المرجو اختيار السعة أولاً", "error");
                 return;
             }
-            closeModal('product-modal');
-            setTimeout(() => openModal('order-modal'), 300);
-        }
+            window.closeModal('product-modal');
+            setTimeout(() => window.openModal('order-modal'), 300);
+        };
 
-        function submitOrder(e) {
+        window.submitOrder = function(e) {
             e.preventDefault();
             const name = document.getElementById('order-name').value;
             const phone = document.getElementById('order-phone').value;
             const address = document.getElementById('order-address').value;
             const variant = currentProduct.variants[selectedVariantIndex];
             
-            const msg = `*طلب جديد من ELECTRO AYMAN* 🌟
--------------------------
-📱 *الهاتف:* ${currentProduct.name}
-💾 *السعة:* ${variant.capacity}
-💰 *السعر:* ${variant.price.toLocaleString()} درهم
--------------------------
-👤 *الاسم:* ${name}
-📞 *الرقم:* ${phone}
-📍 *العنوان:* ${address}`;
+            const msg = `*طلب جديد من ELECTRO AYMAN* 🌟\n-------------------------\n📱 *الهاتف:* ${currentProduct.name}\n💾 *السعة:* ${variant.capacity}\n💰 *السعر:* ${variant.price.toLocaleString()} درهم\n-------------------------\n👤 *الاسم:* ${name}\n📞 *الرقم:* ${phone}\n📍 *العنوان:* ${address}`;
 
             window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
-            closeModal('order-modal');
+            window.closeModal('order-modal');
             document.getElementById('order-form').reset();
             showToast("تم توجيهك للواتساب بنجاح!");
-        }
+        };
 
-        // --- 4. نظام الإدارة (Admin) ---
-        function checkAdmin() {
+        window.checkAdmin = function() {
             const pass = document.getElementById('admin-password').value;
             if(pass === ADMIN_PASS) {
                 document.getElementById('admin-password').value = '';
-                closeModal('admin-modal');
+                window.closeModal('admin-modal');
                 setTimeout(() => {
                     renderAdminList();
-                    openModal('admin-dashboard');
+                    window.openModal('admin-dashboard');
                 }, 300);
             } else {
                 showToast("كلمة المرور خاطئة!", "error");
             }
-        }
+        };
 
         function renderAdminList() {
             const list = document.getElementById('admin-product-list');
@@ -523,15 +529,15 @@
                             </div>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="openProductForm(${p.id})" class="text-blue-400 bg-blue-400/10 w-8 h-8 rounded-lg hover:bg-blue-400/20 flex justify-center items-center transition-colors"><i class="fas fa-pen text-xs"></i></button>
-                            <button onclick="deleteProduct(${p.id})" class="text-red-400 bg-red-400/10 w-8 h-8 rounded-lg hover:bg-red-400/20 flex justify-center items-center transition-colors"><i class="fas fa-trash text-xs"></i></button>
+                            <button onclick="window.openProductForm('${p.id}')" class="text-blue-400 bg-blue-400/10 w-8 h-8 rounded-lg hover:bg-blue-400/20 flex justify-center items-center transition-colors"><i class="fas fa-pen text-xs"></i></button>
+                            <button onclick="window.deleteProduct('${p.id}')" class="text-red-400 bg-red-400/10 w-8 h-8 rounded-lg hover:bg-red-400/20 flex justify-center items-center transition-colors"><i class="fas fa-trash text-xs"></i></button>
                         </div>
                     </div>
                 `;
             });
         }
 
-        function openProductForm(id = null) {
+        window.openProductForm = function(id = null) {
             const vContainer = document.getElementById('variants-container');
             vContainer.innerHTML = '';
             
@@ -544,7 +550,7 @@
                 document.getElementById('p-condition').value = p.condition;
                 document.getElementById('p-image').value = p.image;
                 document.getElementById('p-specs').value = p.specs;
-                p.variants.forEach(v => addVariantField(v.capacity, v.price));
+                p.variants.forEach(v => window.addVariantField(v.capacity, v.price));
             } else {
                 document.getElementById('form-modal-title').textContent = "إضافة هاتف جديد";
                 document.getElementById('edit-product-id').value = "";
@@ -553,12 +559,12 @@
                 document.getElementById('p-condition').value = "";
                 document.getElementById('p-image').value = "";
                 document.getElementById('p-specs').value = "";
-                addVariantField(); 
+                window.addVariantField(); 
             }
-            openModal('admin-product-form');
-        }
+            window.openModal('admin-product-form');
+        };
 
-        function addVariantField(cap = "", pr = "") {
+        window.addVariantField = function(cap = "", pr = "") {
             const vId = Math.random().toString(36).substr(2, 9);
             const html = `
                 <div class="flex gap-2 variant-item items-center" id="var-${vId}">
@@ -568,13 +574,17 @@
                 </div>
             `;
             document.getElementById('variants-container').insertAdjacentHTML('beforeend', html);
-        }
+        };
 
-        function saveProduct() {
+        window.saveProduct = async function() {
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
+            saveBtn.disabled = true;
+
             const idInput = document.getElementById('edit-product-id').value;
-            
             const variantEls = document.querySelectorAll('.variant-item');
             const newVariants = [];
+            
             variantEls.forEach(el => {
                 const cap = el.querySelector('.var-cap').value.trim();
                 const pr = parseInt(el.querySelector('.var-price').value);
@@ -583,11 +593,12 @@
 
             if(newVariants.length === 0) {
                 showToast("يجب إدخال سعة وسعر واحد على الأقل", "error");
+                saveBtn.innerHTML = 'حفظ الهاتف';
+                saveBtn.disabled = false;
                 return;
             }
 
             const productData = {
-                id: idInput ? parseInt(idInput) : Date.now(),
                 brand: document.getElementById('p-brand').value.trim() || "غير محدد",
                 name: document.getElementById('p-name').value.trim() || "هاتف بدون اسم",
                 condition: document.getElementById('p-condition').value.trim() || "غير محدد",
@@ -596,43 +607,52 @@
                 variants: newVariants
             };
 
-            if (idInput) {
-                const index = products.findIndex(p => p.id === parseInt(idInput));
-                if(index !== -1) products[index] = productData;
-                showToast("تم تعديل الهاتف بنجاح!");
-            } else {
-                products.unshift(productData);
-                showToast("تمت إضافة الهاتف بنجاح!");
+            try {
+                if (idInput) {
+                    await updateDoc(doc(db, "products", idInput), productData);
+                    showToast("تم تعديل الهاتف بنجاح!");
+                } else {
+                    await addDoc(collection(db, "products"), productData);
+                    showToast("تمت إضافة الهاتف بنجاح!");
+                }
+                window.closeModal('admin-product-form');
+                await loadProducts(); // جلب البيانات الجديدة
+            } catch (error) {
+                console.error("Error saving product: ", error);
+                showToast("حدث خطأ أثناء الحفظ", "error");
+            } finally {
+                saveBtn.innerHTML = 'حفظ الهاتف';
+                saveBtn.disabled = false;
             }
+        };
 
-            saveToLocal();
-            renderProducts();
-            renderAdminList();
-            closeModal('admin-product-form');
-        }
-
-        function deleteProduct(id) {
-            if(confirm("هل أنت متأكد من حذف هذا الهاتف؟")) {
-                products = products.filter(p => p.id !== id);
-                saveToLocal();
-                renderProducts();
-                renderAdminList();
-                showToast("تم الحذف بنجاح!");
+        window.deleteProduct = async function(id) {
+            if(confirm("هل أنت متأكد من حذف هذا الهاتف نهائياً؟")) {
+                try {
+                    await deleteDoc(doc(db, "products", id));
+                    showToast("تم الحذف بنجاح!");
+                    await loadProducts();
+                } catch (error) {
+                    console.error("Error deleting document: ", error);
+                    showToast("حدث خطأ أثناء الحذف", "error");
+                }
             }
-        }
+        };
 
-        // إغلاق النوافذ عند الضغط في الفراغ (خارج المحتوى)
+        // إغلاق النوافذ عند الضغط في الفراغ
         window.onclick = (e) => {
             const modals = ['product-modal', 'order-modal', 'admin-modal', 'admin-dashboard', 'admin-product-form'];
             modals.forEach(id => {
                 const m = document.getElementById(id);
-                if (e.target === m) closeModal(id);
+                if (e.target === m) window.closeModal(id);
             });
         };
 
-        // التهيئة عند فتح الموقع
-        window.onload = renderProducts;
+        // بدء تحميل المنتجات عند فتح الموقع
+        window.onload = loadProducts;
     </script>
 </body>
 </html>
-```
+```eof
+
+مبروك عليك! ملي تحط هاد الكود وتدخل للسيت ديالك فـ `github.io`،
